@@ -1,0 +1,104 @@
+-- 餐桌表
+CREATE TABLE `dinnertable` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,--餐桌id
+  `tableName` varchar(20) DEFAULT NULL, -- 餐桌名称
+  `tableStatus` int(11) DEFAULT '0',   -- 餐桌状态   0表示空闲状态   1表示已预订状态
+  `orderDate` datetime DEFAULT NULL,   -- 预定餐桌时间
+  PRIMARY KEY (`id`)
+)
+-- 菜系表  川菜，湘菜等
+CREATE TABLE `foodtype` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,  --菜系id
+  `typeName` varchar(20) DEFAULT NULL,      --菜系名称
+  PRIMARY KEY (`id`)
+)
+-- 菜名表
+CREATE TABLE `food` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,  -- 菜名id
+  `foodName` varchar(20) DEFAULT NULL,     -- 菜名
+  `foodType_id` int(11) DEFAULT NULL,          -- 所属菜系
+  `price` double DEFAULT NULL,                     -- 价格
+  `mprice` double DEFAULT NULL,                  -- 会员价格//删除
+  `remark` varchar(200) DEFAULT NULL,         --菜名描述
+  `popularity` int(11) DEFAULT NULL,          -- 人气数
+ `comment` int(11) DEFAULT NULL,          -- 评论数
+  `img` varchar(100) DEFAULT NULL,              -- 菜名图片对应路径
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`foodType_id`) REFERENCES `foodtype` (`id`)
+)
+
+-- 订单表
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,   -- 订单id
+ `orderUser` int(11) DEFAULT NULL,      --订单所属用户id
+  `table_id` int(11) DEFAULT NULL,                  -- 餐桌id
+  `orderDate` datetime DEFAULT NULL,           -- 下单时间
+  `totalPrice` double DEFAULT NULL,              -- 总金额
+  `orderStatus` int(11) DEFAULT '0',                --支付状态  0未支付   1已支付
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`table_id`) REFERENCES `dinnertable` (`id`) 
+  FOREIGN KEY (`orderUser`) REFERENCES `user` (`id`)
+) 
+
+-- 订单明细表
+CREATE TABLE `orderdetail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,       -- 订单明细id
+  `orderId` int(11) DEFAULT NULL,             -- 所属订单id
+  `food_id` int(11) DEFAULT NULL,             -- 菜名id
+  `foodCount` int(11) DEFAULT NULL,           -- 订餐数量
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`food_id`) REFERENCES `food` (`id`),
+  FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`)
+)
+
+-- 管理员表
+CREATE TABLE `admin` (
+  `id` varchar(20) NOT NULL,                     -- 管理员id
+  `name` varchar(20) DEFAULT NULL,               -- 管理员姓名
+  `password` varchar(32) DEFAULT NULL,           -- 管理员密码
+  PRIMARY KEY (`id`)
+)
+
+--用户表
+CREATE TABLE `user` (
+  
+  `id` int(11) NOT NULL AUTO_INCREMENT,                  -- 用户id
+  `account` varchar(20) DEFAULT NULL,             -- 用户账户名
+  `password` varchar(32) DEFAULT NULL,           -- 用户密码
+  `name` varchar(20) DEFAULT NULL,               -- 用户姓名
+  `phone` varchar(20) DEFAULT NULL,               -- 用户电话
+  `sex` varchar(4) DEFAULT NULL,               -- 用户性别
+    `age` varchar(100) DEFAULT NULL,              -- 用户年龄
+       `address` varchar(100) DEFAULT NULL,              -- 用户地址
+   `img` varchar(100) DEFAULT NULL,              -- 用户图片对应路径
+   
+  
+  PRIMARY KEY (`id`)
+)
+
+--评论    没做
+create table comment(
+       `id` int(11) NOT NULL AUTO_INCREMENT,   //评论id号
+	 `userId` int(11) DEFAULT NULL,      //用户id号
+	`content` varchar(300) DEFAULT NULL, //评论内容
+	 `orderDate` datetime DEFAULT NULL,  //创建评论的时间
+ PRIMARY KEY (`id`),
+ FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+       
+);
+
+
+--回复   没做
+create table Reply(
+       `id` int(11) NOT NULL AUTO_INCREMENT,   //评论id号
+	 `userId` int(11) DEFAULT NULL,      //用户id号
+         replyuser_id int(11) DEFAULT NULL,             //被回复的用户id
+	`content` varchar(300) DEFAULT NULL, //评论内容
+	 `orderDate` datetime DEFAULT NULL,  //创建评论的时间
+ PRIMARY KEY (`id`),
+ FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+       
+);
+
+
+
